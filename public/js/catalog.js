@@ -8,7 +8,7 @@
    ===================================================================== */
 const $ = (s, c = document) => c.querySelector(s);
 const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-const PLACEHOLDER = '/img/placeholder.svg';
+const PLACEHOLDER = '/img/vehicle-placeholder.svg';
 
 const state = { cfg: null, products: [], categories: [], category: 'all', cond: 'all', sort: 'recent', q: '' };
 
@@ -66,6 +66,7 @@ function toast(message) {
 /* ---------- WHATSAPP: mensaje dinámico con el nombre del producto ---------- */
 function waLink(product) {
   const { whatsappNumber, whatsappMessage } = state.cfg;
+  if (!whatsappNumber) return '#horarios';
   const message = whatsappMessage
     .replaceAll('{producto}', product.name)
     .replaceAll('{categoria}', product.category.name)
@@ -120,6 +121,24 @@ function renderFilters() {
   box.append(make('all', 'Todos', state.products.length), ...state.categories.map(c => make(c.slug, c.name, c.count)));
 }
 
+function renderVehicleTypes() {
+  const box = $('#vehicleTypes');
+  if (!state.categories.length) {
+    box.replaceChildren(el('p', { class: 'vehicle-types__empty', text: 'Estamos actualizando el inventario. Escribinos para consultar por otras opciones.' }));
+    return;
+  }
+  box.replaceChildren(...state.categories.map(category => {
+    const button = el('button', { class: 'vehicle-type', type: 'button' },
+      el('strong', { text: category.name }),
+      el('span', { text: `${category.count} ${category.count === 1 ? 'unidad publicada' : 'unidades publicadas'} →` }));
+    button.addEventListener('click', () => {
+      setCategory(category.slug);
+      $('#catalogo').scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth' });
+    });
+    return button;
+  }));
+}
+
 function setCategory(slug) {
   state.category = slug;
   const url = new URL(location.href);
@@ -146,17 +165,17 @@ function renderGrid() {
   } else {
     const filtered = state.q.trim() || state.category !== 'all';
     grid.replaceChildren(el('div', { class: 'empty-state' },
-      el('h3', { text: filtered ? 'No encontramos ese equipo' : 'Estamos preparando el catálogo' }),
+      el('h3', { text: filtered ? 'No encontramos ese vehículo' : 'Estamos preparando el catálogo' }),
       el('p', { text: filtered
-        ? 'Pruebe con otro nombre o tipo de producto.'
-        : 'Mientras tanto, escríbanos y le ayudamos a encontrar el equipo adecuado.' }),
+        ? 'Probá con otra marca, modelo o categoría.'
+        : 'Mientras tanto, escribinos y te ayudamos a encontrar otras opciones.' }),
       filtered
         ? el('button', { class: 'btn btn--line', type: 'button', text: 'Limpiar filtros', onclick: clearFilters })
-        : el('a', { class: 'btn btn--wa', href: '#contacto', text: 'Consultar por WhatsApp' })));
+        : el('a', { class: 'btn btn--wa', href: '#contacto', text: 'Consultar disponibilidad' })));
   }
   $('#status').textContent = state.products.length
-    ? list.length ? `Mostrando ${list.length} de ${state.products.length} productos.` : 'No hay productos que coincidan con su búsqueda.'
-    : 'Pronto publicaremos nuestros equipos. Consúltenos por WhatsApp.';
+    ? list.length ? `Mostrando ${list.length} de ${state.products.length} unidades.` : 'No hay vehículos que coincidan con tu búsqueda.'
+    : 'Pronto publicaremos más unidades. Consultanos por otras opciones.';
   if (window.gsap && !reduceMotion && list.length) {
     gsap.from('.card', { y: 28, opacity: 0, duration: 0.5, stagger: 0.05, ease: 'power2.out', clearProps: 'all' });
   }
@@ -186,8 +205,8 @@ function card(p) {
         ? el('ul', { class: 'mini' }, mini.map(s => el('li', {}, el('span', { text: s.label }), el('b', { text: s.value }))))
         : null,
       el('div', { class: 'card__cta' },
-        el('a', { class: 'btn btn--wa', href: waLink(p), target: '_blank', rel: 'noopener', text: 'Consultar por WhatsApp' }),
-                el('button', { class: 'card__more', type: 'button', text: 'Ver detalle →', onclick: open }))
+        state.cfg.whatsappNumber ? el('a', { class: 'btn btn--wa', href: waLink(p), target: '_blank', rel: 'noopener', text: 'Consultar por WhatsApp' }) : null,
+        el('button', { class: 'card__more', type: 'button', text: 'Ver detalle →', onclick: open }))
     )
   );
 }
@@ -219,6 +238,7 @@ function openDetail(p) {
   $('#d-desc').textContent = p.description;
   $('#d-desc').hidden = !p.description;
   $('#d-wa').href = waLink(p);
+  $('#d-wa').hidden = !state.cfg.whatsappNumber;
 
   const urls = p.images.length ? p.images.map(i => i.url) : [PLACEHOLDER];
   const main = $('#d-main');
@@ -293,7 +313,7 @@ dlg.addEventListener('click', e => { if (e.target === dlg) dlg.close(); }); // c
 dlg.addEventListener('close', () => {
   history.replaceState(null, '', `/${location.search}`);
   if (state.cfg) {
-    document.title = `Catálogo de maquinaria agrícola | ${state.cfg.businessName}`;
+    document.title = `Vehículos disponibles | ${state.cfg.businessName}`;
     $('meta[name=description]').content = DEFAULT_DESC;
   }
 });
@@ -383,7 +403,7 @@ async function init() {
   $('#year').textContent = new Date().getFullYear();
   setupPage();
   $('#grid').replaceChildren(...skeletons());
-  $('#status').textContent = 'Cargando equipos…';
+  $('#status').textContent = 'Cargando vehículos…';
   try {
     const [cfg, categories, products] = await Promise.all([api('/api/config'), api('/api/categories'), api('/api/products')]);
     Object.assign(state, { cfg, categories, products });
@@ -396,18 +416,26 @@ async function init() {
     return;
   }
   const { cfg } = state;
-  document.title = `Catálogo de maquinaria agrícola | ${cfg.businessName}`;
+  document.title = `Vehículos disponibles | ${cfg.businessName}`;
   $('#bizName').textContent = cfg.businessName;
-  $('#mapText').textContent = cfg.mapQuery;
-  $('#mapFrame').src = `https://maps.google.com/maps?q=${encodeURIComponent(cfg.mapQuery)}&z=14&ie=UTF8&iwloc=&output=embed`;
-  $('#igLink').href = `https://www.instagram.com/${encodeURIComponent(cfg.instagram)}/`;
-  const general = `https://wa.me/${cfg.whatsappNumber}?text=${encodeURIComponent('Hola, quisiera consultar por maquinaria agrícola.')}`;
+  const mapQuery = cfg.mapQuery || 'Av. Ameghino 1154, Esquel, Chubut 9200, Argentina';
+  $('#mapText').textContent = mapQuery;
+  $('#mapFrame').src = `https://maps.google.com/maps?q=${encodeURIComponent(mapQuery)}&z=16&ie=UTF8&iwloc=&output=embed`;
+  $('#mapLink').href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(mapQuery)}`;
+  const general = cfg.whatsappNumber
+    ? `https://wa.me/${cfg.whatsappNumber}?text=${encodeURIComponent('Hola, quiero consultar por los vehículos y servicios de Nuto Automotores.')}`
+    : '#horarios';
   $('#waGeneral').href = general;
   $('#waFloat').href = general;
+  $('#waGeneral').hidden = !cfg.whatsappNumber;
+  $('#waFloat').hidden = !cfg.whatsappNumber;
+  $('#waFloat').setAttribute('aria-label', 'Consultar a Nuto Automotores por WhatsApp');
+  if (cfg.whatsappNumber) $('#waGeneral').textContent = 'Consultar por WhatsApp';
 
   const want = new URLSearchParams(location.search).get('tipo');
   if (want && state.categories.some(c => c.slug === want)) state.category = want;
   renderFilters();
+  renderVehicleTypes();
   renderCondFilters();
   $('#refine').hidden = state.products.length < 2;
   renderGrid();

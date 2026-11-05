@@ -47,13 +47,13 @@ module.exports = {
   publicDir: path.join(root, 'public'),
   viewsDir: path.join(root, 'views'),
   business: {
-    name: env.BUSINESS_NAME || 'Brumaq',
+    name: env.BUSINESS_NAME || 'Nuto Automotores',
     whatsappNumber: (env.WHATSAPP_NUMBER || '').replace(/\D/g, ''),
     instagram: env.INSTAGRAM || '',
-    mapQuery: env.MAP_QUERY || 'Argentina',
+    mapQuery: env.MAP_QUERY || 'Av. Ameghino 1154, Esquel, Chubut 9200, Argentina',
     whatsappMessage:
       env.WHATSAPP_MESSAGE ||
-      'Hola, estoy interesado en obtener más información sobre {producto} ({categoria}) que vi en su web.'
+      'Hola, quiero consultar por {producto} ({categoria}) que vi en el catálogo de Nuto Automotores. {url}'
   },
   limits: {
     maxImagesPerProduct: 8,

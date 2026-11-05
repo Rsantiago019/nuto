@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
 <title>Panel de administración</title>
-<link rel="icon" href="img/logo.png" type="image/png">
+<link rel="icon" href="/img/logo.jpg" type="image/jpeg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Saira:ital,wdth,wght@0,75..125,400..900;1,75..125,400..900&display=swap" rel="stylesheet">
@@ -15,7 +15,7 @@
 <body>
 <header class="bar">
   <div class="bar__in">
-    <img src="/img/logo.png" alt="Brumaq" width="132" height="42">
+    <img src="/img/logo.jpg" alt="Nuto Automotores" width="48" height="48">
     <span class="bar__title">Panel de administración</span>
     <span class="bar__spacer"></span>
     <span class="bar__user" id="userEmail"></span>
@@ -26,8 +26,8 @@
 
 <main class="wrap">
   <div class="tabs" role="tablist">
-    <button role="tab" id="tab-products" aria-selected="true" aria-controls="view-products">Productos</button>
-    <button role="tab" id="tab-categories" aria-selected="false" aria-controls="view-categories">Tipos de producto</button>
+    <button role="tab" id="tab-products" aria-selected="true" aria-controls="view-products">Unidades</button>
+    <button role="tab" id="tab-categories" aria-selected="false" aria-controls="view-categories">Categorías</button>
     <button role="tab" id="tab-users" aria-selected="false" aria-controls="view-users">Cuentas</button>
   </div>
 
@@ -35,26 +35,26 @@
 
   <section id="view-products" role="tabpanel" aria-labelledby="tab-products">
     <div class="head">
-      <h2>Productos <small id="count"></small></h2>
-      <button class="btn" id="newProduct" type="button">+ Nuevo producto</button>
+      <h2>Vehículos <small id="count"></small></h2>
+      <button class="btn" id="newProduct" type="button">+ Nueva unidad</button>
     </div>
     <div class="table-wrap">
       <table>
-        <thead><tr><th></th><th>Nombre</th><th>Tipo</th><th>Estado</th><th>Actualizado</th><th class="right">Acciones</th></tr></thead>
+        <thead><tr><th></th><th>Vehículo</th><th>Categoría</th><th>Publicación</th><th>Actualizado</th><th class="right">Acciones</th></tr></thead>
         <tbody id="productRows"></tbody>
       </table>
     </div>
   </section>
 
   <section id="view-categories" role="tabpanel" aria-labelledby="tab-categories" hidden>
-    <div class="head"><h2>Tipos de producto</h2></div>
+    <div class="head"><h2>Categorías de vehículos</h2></div>
     <form class="inline" id="catForm">
-      <label class="grow">Nuevo tipo<input name="name" maxlength="60" placeholder="Ej.: Cosechadoras" required></label>
+      <label class="grow">Nueva categoría<input name="name" maxlength="60" placeholder="Ej.: Autos, Camionetas, Motos Beta" required></label>
       <button class="btn" type="submit">Agregar</button>
     </form>
     <div class="table-wrap">
       <table>
-        <thead><tr><th>Nombre</th><th>Productos</th><th class="right">Acciones</th></tr></thead>
+        <thead><tr><th>Nombre</th><th>Unidades</th><th class="right">Acciones</th></tr></thead>
         <tbody id="catRows"></tbody>
       </table>
     </div>
@@ -114,22 +114,22 @@
 <dialog id="productDialog" aria-labelledby="pd-title">
   <form id="productForm" novalidate>
     <div class="dlg__head">
-      <h2 id="pd-title">Nuevo producto</h2>
+      <h2 id="pd-title">Nueva unidad</h2>
       <button class="x" type="button" id="pdClose" aria-label="Cerrar">×</button>
     </div>
 
     <div class="dlg__body">
-      <label>Nombre del producto *
+      <label>Vehículo / marca y modelo *
         <input name="name" maxlength="120" required>
       </label>
       <div class="row2">
-        <label>Tipo de producto *
+        <label>Categoría *
           <select name="category_id" required></select>
         </label>
         <label>Estado
           <select name="status">
-            <option value="active">Activo (visible en el catálogo)</option>
-            <option value="inactive">Inactivo (oculto)</option>
+            <option value="active">Publicado (visible en el catálogo)</option>
+            <option value="inactive">Borrador (oculto)</option>
           </select>
         </label>
       </div>
@@ -141,13 +141,13 @@
       </label>
 
       <fieldset>
-        <legend>Características técnicas</legend>
+        <legend>Datos de la unidad</legend>
         <div id="specRows"></div>
         <button class="btn btn--ghost btn--sm" type="button" id="addSpec">+ Agregar característica</button>
         <datalist id="specNames">
-          <option value="Potencia"></option><option value="Tracción"></option><option value="Transmisión"></option>
-          <option value="Capacidad"></option><option value="Ancho de trabajo"></option><option value="Año"></option>
-          <option value="Condición"></option><option value="Uso"></option>
+          <option value="Año"></option><option value="Kilometraje"></option><option value="Estado"></option>
+          <option value="Combustible"></option><option value="Transmisión"></option><option value="Tracción"></option>
+          <option value="Versión"></option><option value="Cilindrada"></option>
         </datalist>
       </fieldset>
 

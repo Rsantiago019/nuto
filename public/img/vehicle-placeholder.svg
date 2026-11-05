@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 480" role="img" aria-labelledby="title">
+  <title id="title">Foto del vehículo pendiente</title>
+  <rect width="640" height="480" fill="#f2f0ec"/>
+  <path d="M190 278l28-66c8-19 25-31 45-31h116c20 0 37 12 45 31l28 66 25 14c9 5 14 14 14 24v41H158v-41c0-10 5-19 14-24z" fill="#fff" stroke="#c8c4bd" stroke-width="8" stroke-linejoin="round"/>
+  <path d="M238 211h166l24 58H214z" fill="#e74438" opacity=".14"/>
+  <path d="M216 279h210" stroke="#c8c4bd" stroke-width="8"/>
+  <circle cx="226" cy="355" r="29" fill="#292b2c"/>
+  <circle cx="418" cy="355" r="29" fill="#292b2c"/>
+  <circle cx="226" cy="355" r="12" fill="#f2f0ec"/>
+  <circle cx="418" cy="355" r="12" fill="#f2f0ec"/>
+  <text x="320" y="432" fill="#5b5b59" font-family="Arial, sans-serif" font-size="22" font-weight="700" text-anchor="middle">FOTO DE LA UNIDAD</text>
+</svg>

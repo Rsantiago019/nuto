@@ -197,7 +197,7 @@ function renderProducts() {
         el('button', { class: 'btn btn--danger btn--sm', type: 'button', text: 'Borrar', onclick: () => removeProduct(p) }))
     );
   });
-  $('#productRows').replaceChildren(...(rows.length ? rows : [el('tr', {}, el('td', { colspan: 6, class: 'empty', text: 'Todavía no hay productos. Cree el primero con “Nuevo producto”.' }))]));
+  $('#productRows').replaceChildren(...(rows.length ? rows : [el('tr', {}, el('td', { colspan: 6, class: 'empty', text: 'Todavía no hay vehículos. Cargá la primera unidad desde el panel.' }))]));
 }
 async function toggleStatus(p) {
   try {
@@ -207,10 +207,10 @@ async function toggleStatus(p) {
   } catch (e) { toast(e.message, true); }
 }
 async function removeProduct(p) {
-  if (!(await confirmAction('Borrar producto', `¿Borrar "${p.name}" y sus imágenes? Esta acción no se puede deshacer.`))) return;
+  if (!(await confirmAction('Borrar vehículo', `¿Borrar "${p.name}" y sus imágenes? Esta acción no se puede deshacer.`))) return;
   try {
     await api(`/api/admin/products/${p.id}`, { method: 'DELETE' });
-    toast('Producto borrado.');
+    toast('Vehículo borrado.');
     await loadProducts();
     await loadCategories();
   } catch (e) { toast(e.message, true); }
@@ -222,7 +222,7 @@ const form = $('#productForm');
 
 function addSpecRow(label = '', value = '') {
   const row = el('div', { class: 'spec-row' },
-    el('input', { name: 'spec_label', placeholder: 'Característica (ej. Potencia)', list: 'specNames', maxlength: '60', value: label, 'aria-label': 'Nombre de la característica' }),
+    el('input', { name: 'spec_label', placeholder: 'Dato (ej. Año)', list: 'specNames', maxlength: '60', value: label, 'aria-label': 'Nombre del dato' }),
     el('input', { name: 'spec_value', placeholder: 'Valor (ej. 110 HP)', maxlength: '200', value, 'aria-label': 'Valor' }),
     el('button', { class: 'x x--sm', type: 'button', 'aria-label': 'Quitar característica', text: '×', onclick: () => row.remove() }));
   $('#specRows').append(row);
@@ -269,7 +269,7 @@ function openForm(p = null) {
   state.editing = p;
   state.removeIds = new Set();
   state.newFiles = [];
-  $('#pd-title').textContent = p ? 'Editar producto' : 'Nuevo producto';
+  $('#pd-title').textContent = p ? 'Editar vehículo' : 'Nueva unidad';
   $('#formError').textContent = '';
   form.elements.name.value = p?.name ?? '';
   form.description.value = p?.description ?? '';
@@ -283,7 +283,7 @@ function openForm(p = null) {
   dlg.showModal();
 }
 $('#newProduct').addEventListener('click', () => {
-  if (!state.categories.length) { toast('Primero cree al menos un tipo de producto.', true); showTab('categories'); return; }
+  if (!state.categories.length) { toast('Primero creá una categoría de vehículos.', true); showTab('categories'); return; }
   openForm();
 });
 const closeForm = () => dlg.close();
@@ -294,7 +294,7 @@ form.addEventListener('submit', async e => {
   e.preventDefault();
   const err = $('#formError');
   err.textContent = '';
-  if (form.elements.name.value.trim().length < 2) { err.textContent = 'Ingrese el nombre del producto.'; form.elements.name.focus(); return; }
+  if (form.elements.name.value.trim().length < 2) { err.textContent = 'Ingresá la marca y el modelo del vehículo.'; form.elements.name.focus(); return; }
   if (readSpecs().some(s => !s.label || !s.value)) { err.textContent = 'Complete nombre y valor de cada característica, o quite la fila vacía.'; return; }
 
   $('#pdSave').disabled = true;
@@ -322,7 +322,7 @@ form.addEventListener('submit', async e => {
     await api(url, { method: state.editing ? 'PUT' : 'POST', json });
     saved = true;
     dlg.close();
-    toast(state.editing ? 'Producto actualizado.' : 'Producto creado.');
+    toast(state.editing ? 'Vehículo actualizado.' : 'Vehículo publicado.');
     await loadProducts();
     await loadCategories();
   } catch (e2) {
@@ -336,7 +336,7 @@ form.addEventListener('submit', async e => {
   }
 });
 
-/* ---------- TIPOS DE PRODUCTO ---------- */
+/* ---------- CATEGORÍAS DE VEHÍCULOS ---------- */
 async function loadCategories() {
   state.categories = await api('/api/admin/categories');
   renderCategories();
@@ -349,12 +349,12 @@ function renderCategories() {
       el('td', { text: String(c.products) }),
       el('td', { class: 'right actions' },
         el('button', { class: 'btn btn--ghost btn--sm', type: 'button', text: 'Guardar', onclick: async () => {
-          try { state.categories = await api(`/api/admin/categories/${c.id}`, { method: 'PUT', json: { name: input.value } }); renderCategories(); toast('Tipo actualizado.'); await loadProducts(); }
+          try { state.categories = await api(`/api/admin/categories/${c.id}`, { method: 'PUT', json: { name: input.value } }); renderCategories(); toast('Categoría actualizada.'); await loadProducts(); }
           catch (e) { toast(e.message, true); }
         } }),
         el('button', { class: 'btn btn--danger btn--sm', type: 'button', text: 'Borrar', onclick: async () => {
-          if (!(await confirmAction('Borrar tipo de producto', `¿Borrar el tipo "${c.name}"?`))) return;
-          try { state.categories = await api(`/api/admin/categories/${c.id}`, { method: 'DELETE' }); renderCategories(); toast('Tipo borrado.'); }
+          if (!(await confirmAction('Borrar categoría', `¿Borrar la categoría "${c.name}"?`))) return;
+          try { state.categories = await api(`/api/admin/categories/${c.id}`, { method: 'DELETE' }); renderCategories(); toast('Categoría borrada.'); }
           catch (e) { toast(e.message, true); }
         } })));
   }));
@@ -366,7 +366,7 @@ $('#catForm').addEventListener('submit', async e => {
     state.categories = await api('/api/admin/categories', { method: 'POST', json: { name: input.value } });
     input.value = '';
     renderCategories();
-    toast('Tipo agregado.');
+    toast('Categoría agregada.');
   } catch (err) { toast(err.message, true); }
 });
 

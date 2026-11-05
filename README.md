@@ -1,6 +1,6 @@
-# Catálogo digital Brumaq
+# Catálogo digital Nuto Automotores
 
-Catálogo público de maquinaria agrícola con panel de administración, gestión de productos e imágenes y recuperación de contraseña por correo. El proyecto está preparado para desplegarse en Vercel con Express Functions, Neon Postgres y Vercel Blob.
+Catálogo público de vehículos con panel de administración, gestión de unidades e imágenes y recuperación de contraseña por correo. Nuto Automotores ofrece ventas, permutas y consignaciones, y es representante oficial de Beta Motor Argentina. El proyecto está preparado para desplegarse en Vercel con Express Functions, Neon Postgres y Vercel Blob.
 
 **Tecnologías:** Node.js 20+ · Express 5 · PostgreSQL · Vercel Blob · JWT en cookie `httpOnly` · bcrypt · Helmet.
 
@@ -78,7 +78,9 @@ npm run seed
 npm run seed -- --reset
 ```
 
-Los comandos de seed son solo para demostración: agregan productos de ejemplo con una imagen de placeholder.
+Los comandos de seed son solo para demostración: agregan categorías de autos, camionetas y motos Beta, además de publicaciones de ejemplo con imagen placeholder. Antes de publicar, reemplace esas fichas y cargue las unidades reales desde el panel. `--reset` elimina los productos y categorías existentes.
+
+Para agregar o actualizar las dos unidades reales iniciales de Nuto sin borrar el resto del inventario, configure `DATABASE_URL` en `.env.local` y ejecute `npm run import:nuto-stock`. El importador no inventa precios ni reemplaza datos descriptivos previos; suba las fotos reales desde el panel.
 
 ## Recuperación de contraseña
 
