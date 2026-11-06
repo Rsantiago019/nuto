@@ -174,19 +174,30 @@
       <div class="contact__txt">
         <h2 class="title title--light">¿Buscás otra opción?</h2>
         <p>Contanos qué vehículo tenés o qué estás buscando. Te respondemos personalmente.</p>
-        <a class="btn btn--wa" id="waGeneral" href="#" target="_blank" rel="noopener">Consultar por WhatsApp</a>
+        <div class="contact__btns">
+          <a class="btn btn--wa" id="waGeneral" href="#" target="_blank" rel="noopener">Consultar por WhatsApp</a>
+          <a class="btn btn--ig" href="https://www.instagram.com/nutoautomotores/" target="_blank" rel="noopener">Seguinos en Instagram</a>
+        </div>
       </div>
-      <form class="inquiry" id="inquiry" novalidate hidden>
-        <h3>O déjenos su consulta</h3>
+      <form class="inquiry" id="inquiry" novalidate>
+        <h3>O envianos tu consulta</h3>
         <div class="inquiry__row">
           <label>Nombre<input name="name" autocomplete="name" maxlength="80" required></label>
-          <label>Email o teléfono<input name="contact" autocomplete="email" maxlength="120" required></label>
+          <label>Consulta
+            <select name="type" id="inqType">
+              <option value="general">General</option>
+              <option value="vehiculo">Vehículo</option>
+              <option value="permuta">Permuta</option>
+              <option value="consignacion">Consignación</option>
+              <option value="financiacion">Financiación</option>
+              <option value="otra">Otra</option>
+            </select>
+          </label>
         </div>
-        <label>Equipo de interés<select name="product" id="inqProduct"><option value="">Consulta general</option></select></label>
-        <label>Mensaje<textarea name="message" rows="4" maxlength="1500" required placeholder="Cuéntenos qué necesita…"></textarea></label>
-        <input class="inquiry__trap" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <label id="inqProductWrap" hidden>Vehículo de interés<select name="product" id="inqProduct"><option value="">Seleccioná un vehículo</option></select></label>
+        <label>Mensaje<textarea name="message" rows="4" maxlength="1000" required placeholder="Contanos qué necesitás…"></textarea></label>
         <p class="inquiry__msg" id="inqMsg" role="status" aria-live="polite"></p>
-        <button class="btn" type="submit">Enviar consulta</button>
+        <button class="btn btn--wa" type="submit">Enviar por WhatsApp</button>
       </form>
     </div>
   </section>
@@ -195,7 +206,7 @@
 <footer class="footer">
   <div class="wrap footer__in">
     <span>© <span id="year"></span> <span id="bizName">Nuto Automotores</span>. Ventas · Permutas · Consignaciones.</span>
-    <span class="footer__links"><a href="https://www.instagram.com/betamotorargentina/?hl=es" target="_blank" rel="noopener">Beta Motor Argentina en Instagram ↗</a><a href="/admin">Acceso administrador</a></span>
+    <span class="footer__links"><a href="https://www.instagram.com/nutoautomotores/" target="_blank" rel="noopener">Instagram de Nuto Automotores ↗</a><a href="/admin">Acceso administrador</a></span>
   </div>
 </footer>
 
@@ -230,6 +241,8 @@
 
 <button class="to-top" id="toTop" type="button" aria-label="Volver arriba" hidden>↑</button>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+
 
 <a class="wa-float" id="waFloat" href="#" target="_blank" rel="noopener" aria-label="Escribir por WhatsApp">
   <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm5.2 14.1c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .2-3.3-.7-2.8-1.2-4.6-4-4.7-4.2-.1-.2-1.1-1.5-1.1-2.8s.7-2 1-2.3c.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.8 2c.1.2.1.3 0 .5l-.3.5-.4.4c-.1.2-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1 2.1 1.3 2.4 1.5.3.1.5.1.6-.1l.9-1.1c.2-.3.4-.2.6-.1l1.9.9c.3.1.5.2.5.3.1.1.1.6-.1 1.2z"/></svg>

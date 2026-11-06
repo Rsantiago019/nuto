@@ -707,6 +707,12 @@ dialog::backdrop {
   box-shadow: 2px 2px 0 var(--night);
 }
 
+.wa-float.ig-float {
+  bottom: 84px;
+  background: #e1306c;
+  color: #fff;
+}
+
 .wa-float svg {
   width: 28px;
   height: 28px;
@@ -763,8 +769,8 @@ h1, h2, h3 {
   transition: background-color 0.18s, color 0.18s, transform 0.18s, box-shadow 0.18s;
 }
 .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(11, 22, 36, 0.18); }
-.btn--wa { background: #25d366; border-color: #25d366; color: #06301a; box-shadow: none; }
-.btn--wa:hover { background: #1fbf5b; border-color: #1fbf5b; box-shadow: 0 8px 20px rgba(37, 211, 102, 0.3); }
+.btn--wa { background: #25d366; border-color: #25d366; }
+.btn--wa:hover { background: #1fbf5b; border-color: #1fbf5b; }
 .btn--line { background: #fff; color: var(--night); border-color: var(--silver-2); }
 .btn--line:hover { background: var(--night); border-color: var(--night); color: #fff; box-shadow: none; transform: none; }
 
@@ -925,6 +931,7 @@ dialog::backdrop { background: rgba(8, 19, 31, 0.7); backdrop-filter: blur(3px);
 .footer a { transition: color 0.15s; }
 .wa-float { width: 58px; height: 58px; right: 20px; bottom: 20px; border: 0; border-radius: 50%; box-shadow: 0 10px 26px rgba(8, 40, 22, 0.3); }
 .wa-float:hover { box-shadow: 0 14px 30px rgba(8, 40, 22, 0.38); transform: translateY(-3px); }
+.wa-float.ig-float { right: 20px; bottom: 90px; }
 
 @media (max-width: 760px) {
   .header__in { height: 64px; }
@@ -1639,8 +1646,8 @@ body { background: #faf9f7; color: var(--night); }
 .hours strong i { color: #ffaaa2; font-style: normal; }
 .hours__note { color: #d3d4d2; font-size: .9rem; }
 .contact { background: #292b2c; }
-.contact .btn--wa { background: #218c58; border-color: #218c58; }
-.contact .btn--wa:hover { background: #176f45; border-color: #176f45; }
+.contact .btn--wa { background: #3ad472; border-color: #218c58; }
+.contact .btn--wa:hover { background: #25d366; }
 .inquiry { border-radius: 6px; }
 .inquiry .btn { background: #e74438; box-shadow: none; }
 .inquiry .btn:hover { background: #c9342b; }
@@ -1681,3 +1688,9 @@ body { background: #faf9f7; color: var(--night); }
   background: rgba(15, 17, 18, .68);
   font-size: .72rem;
 }
+
+.contact__btns{display:flex;flex-wrap:wrap;gap:.75rem}
+.btn--ig,.contact .btn--ig{background:#e1306c;border-color:#e1306c;color:#fff}
+.btn--ig:hover,.contact .btn--ig:hover{background:#c2255a;border-color:#c2255a}
+.inquiry .btn--wa{background:#218c58;color:#fff;box-shadow:none}
+.inquiry .btn--wa:hover{background:#176f45}

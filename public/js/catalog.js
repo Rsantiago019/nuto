@@ -295,10 +295,12 @@ function openDetail(p) {
     try { await navigator.clipboard.writeText(url); toast('Enlace copiado'); } catch { toast(url); }
   };
   const inq = $('#d-inquiry');
-  inq.hidden = !state.cfg.inquiryEnabled;
+  inq.hidden = false;
   inq.onclick = () => {
     dlg.close();
     $('#inqProduct').value = p.name;
+    $('#inqType').value = 'vehiculo';
+    $('#inqType').dispatchEvent(new Event('change'));
     $('#contacto').scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth' });
     setTimeout(() => $('#inquiry [name=name]').focus({ preventScroll: true }), 500);
   };
@@ -322,39 +324,38 @@ const DEFAULT_DESC = $('meta[name=description]').content;
 /* ---------- FORMULARIO DE CONSULTA ---------- */
 function setupInquiry() {
   const form = $('#inquiry');
-  form.hidden = !state.cfg.inquiryEnabled;
-  if (form.hidden) return;
-  $('#inqProduct').append(...state.products.map(p => el('option', { value: p.name, text: p.name })));
+  const typeSel = $('#inqType');
+  const productSel = $('#inqProduct');
+  const productWrap = $('#inqProductWrap');
+  productSel.append(...state.products.map(p => el('option', { value: p.name, text: p.name })));
+  const syncProduct = () => { productWrap.hidden = typeSel.value !== 'vehiculo'; };
+  typeSel.addEventListener('change', syncProduct);
+  productSel.addEventListener('change', () => {
+    if (productSel.value) { typeSel.value = 'vehiculo'; syncProduct(); }
+  });
+  syncProduct();
   const msg = $('#inqMsg');
-  form.addEventListener('submit', async e => {
+  form.addEventListener('submit', e => {
     e.preventDefault();
-    const btn = form.querySelector('button[type=submit]');
     const data = Object.fromEntries(new FormData(form));
     msg.className = 'inquiry__msg';
-    if (String(data.name).trim().length < 2 || String(data.contact).trim().length < 6 || String(data.message).trim().length < 5) {
-      msg.textContent = 'Complete su nombre, un email o teléfono y su consulta.';
+    if (String(data.name).trim().length < 2 || String(data.message).trim().length < 3) {
+      msg.textContent = 'Completá tu nombre y tu consulta.';
       msg.classList.add('is-err');
       return;
     }
-    btn.disabled = true;
-    msg.textContent = 'Enviando…';
-    try {
-      const r = await fetch('/api/inquiries', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'fetch' },
-        body: JSON.stringify(data)
-      });
-      const body = await r.json().catch(() => ({}));
-      if (!r.ok) throw new Error(body.error || 'No pudimos enviar su consulta.');
-      form.reset();
-      msg.textContent = '¡Gracias! Recibimos su consulta y le responderemos a la brevedad.';
-      msg.classList.add('is-ok');
-    } catch (err) {
-      msg.textContent = err.message;
+    if (!state.cfg.whatsappNumber) {
+      msg.textContent = 'El WhatsApp de contacto todavía no está configurado.';
       msg.classList.add('is-err');
-    } finally {
-      btn.disabled = false;
+      return;
     }
+    const label = typeSel.selectedOptions[0].textContent;
+    const lines = [`Hola, soy ${data.name.trim()}.`, `Consulta: ${label}`];
+    if (data.type === 'vehiculo' && data.product) lines.push(`Vehículo: ${data.product}`);
+    lines.push(`Mensaje: ${data.message.trim()}`);
+    window.open(`https://wa.me/${state.cfg.whatsappNumber}?text=${encodeURIComponent(lines.join('\n'))}`, '_blank', 'noopener');
+    msg.textContent = 'Se abrió WhatsApp para enviar tu consulta.';
+    msg.classList.add('is-ok');
   });
 }
 
